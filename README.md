@@ -1,11 +1,13 @@
-==architecture
+architecture
+======
 Streaming data generator(access logs): wrk+nginx
 Streaming data collection(): flume
 MQ(topic test and telegraf): kafka
 Streaming data process(source from topic test and sink to topic telegraf): flink
 Metric(TPS and Throughput) collection&storage&monitor: telegraf+influxdb+chronograf/grafana
 
-==nginx 
+nginx 
+======
 	[root@ne3s la]# cat /etc/yum.repos.d/nginx.repo 
 	# nginx.repo
 
@@ -20,16 +22,19 @@ Metric(TPS and Throughput) collection&storage&monitor: telegraf+influxdb+chronog
 	systemctl start nginx
 	systemctl enable nginx
 	
-==wrk 
+wrk 
+======
 	git clone https://github.com/wg/wrk.git
 	cd wrk
 	make install
 
-==zookeeper
+zookeeper
+======
 cd /var/la/zookeeper-3.3.6/bin
 ./zkServer.sh start  
 
-==kafka
+kafka
+======
 start kafka
 	cd /var/la/kafka_2.12-0.10.2.1
 	./bin/kafka-server-start.sh ./config/server.properties &
@@ -39,7 +44,8 @@ create topic:
 	./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic telegraf
 
 
-==flume
+flume
+======
 flume configuration:
 	[root@ne3s apache-flume-1.8.0-bin]# cat conf/flume.conf 
 	# the Agent define
@@ -79,7 +85,8 @@ start flume:
 	cd /var/la/apache-flume-1.8.0-bin
 	bin/flume-ng agent --conf conf --conf-file conf/flume.conf --name a1 -Dflume.root.logger=INFO,console &
 
-==telegraf
+telegraf
+======
 	wget https://dl.influxdata.com/telegraf/releases/telegraf-1.5.2-1.x86_64.rpm
 	yum localinstall telegraf-1.5.2-1.x86_64.rpm 
 	systemctl start telegraf
@@ -120,20 +127,23 @@ telegraf configuration:
 	  ## larger messages are dropped
 	  max_message_len = 65536
 
-==influxdb
+influxdb
+======
 	wget https://dl.influxdata.com/influxdb/releases/influxdb-1.4.3.x86_64.rpm
 	yum localinstall influxdb-1.4.3.x86_64.rpm
 	systemctl start influxdb
 	systemctl enable influxdb
 
-==chronograf/grafana
+chronograf/grafana
+======
 	wget https://dl.influxdata.com/chronograf/releases/chronograf-1.4.2.1.x86_64.rpm
 	wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-5.0.0-1.x86_64.rpm
 	yum localinstall  chronograf-1.4.2.1.x86_64.rpm grafana-5.0.0-1.x86_64.rpm
 	systemctl start chronograf
 	systemctl enable chronograf
 	
-==flink
+flink
+======
 Install and start flink:
 	wget http://mirrors.hust.edu.cn/apache/flink/flink-1.4.0/flink-1.4.0-bin-scala_2.11.tgz
 	tar -zxvf flink-1.4.0-bin-scala_2.11.tgz
@@ -148,8 +158,3 @@ Copy to flink-1.4.0/bin and commit the job to flink
 
 flink admin ui:
 	http://localhost:8081/
-
-	
-	
-	
-	
