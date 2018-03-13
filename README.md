@@ -1,9 +1,13 @@
 architecture
 ======
 Streaming data generator(access logs): wrk+nginx
+
 Streaming data collection(): flume
+
 MQ(topic test and telegraf): kafka
+
 Streaming data process(source from topic test and sink to topic telegraf): flink
+
 Metric(TPS and Throughput) collection&storage&monitor: telegraf+influxdb+chronograf/grafana
 
 nginx 
@@ -30,16 +34,18 @@ wrk
 
 zookeeper
 ======
-cd /var/la/zookeeper-3.3.6/bin
-./zkServer.sh start  
+	cd /var/la/zookeeper-3.3.6/bin
+	./zkServer.sh start  
 
 kafka
 ======
 start kafka
+-----------
 	cd /var/la/kafka_2.12-0.10.2.1
 	./bin/kafka-server-start.sh ./config/server.properties &
 
 create topic:
+-----------
 	./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
 	./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic telegraf
 
@@ -47,6 +53,7 @@ create topic:
 flume
 ======
 flume configuration:
+-----------
 	[root@ne3s apache-flume-1.8.0-bin]# cat conf/flume.conf 
 	# the Agent define
 	a1.sources = r1
@@ -82,6 +89,7 @@ flume configuration:
 	[root@ne3s apache-flume-1.8.0-bin]# 
 
 start flume:
+-----------
 	cd /var/la/apache-flume-1.8.0-bin
 	bin/flume-ng agent --conf conf --conf-file conf/flume.conf --name a1 -Dflume.root.logger=INFO,console &
 
@@ -93,6 +101,7 @@ telegraf
 	systemctl enable telegraf
 
 telegraf configuration:
+-----------
 	# Read metrics from Kafka topic(s)
 	[[inputs.kafka_consumer]]
 	  ## kafka servers
@@ -145,16 +154,20 @@ chronograf/grafana
 flink
 ======
 Install and start flink:
+-----------
 	wget http://mirrors.hust.edu.cn/apache/flink/flink-1.4.0/flink-1.4.0-bin-scala_2.11.tgz
 	tar -zxvf flink-1.4.0-bin-scala_2.11.tgz
 	cd flink-1.4.0/bin
 	sh start-local.sh
 
 Compile flink-stream-kafka-demo:
+-----------
 	mvn assembly:assembly
 
 Copy to flink-1.4.0/bin and commit the job to flink
+-----------
 	sh flink.sh run flink-stream-kafka-demo-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 flink admin ui:
+-----------
 	http://localhost:8081/
